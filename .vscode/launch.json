@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "royalties_bb ANP",
+            "type": "python",
+            "request": "launch",
+            "module": "royalties_bb",
+            "args": [
+                "--receita",
+                "ANP",
+                "--data_inicial",
+                "2011-01-01",
+                "--data_final",
+                "2011-08-31",
+            ]
+        },
+        {
+            "name": "royalties_bb PEA",
+            "type": "python",
+            "request": "launch",
+            "module": "royalties_bb",
+            "args": [
+                "--receita",
+                "PEA",
+                "--data_inicial",
+                "2011-01-01",
+                "--data_final",
+                "2012-08-31",
+                "--log_level",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "royalties_bb help",
+            "type": "python",
+            "request": "launch",
+            "module": "royalties_bb",
+            "args": [
+                "-h"
+            ]
+        }
+    ]
+}
