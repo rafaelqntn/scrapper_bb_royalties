@@ -2,7 +2,7 @@ import csv
 import logging
 from datetime import datetime, timedelta
 from os import path
-from typing import List
+from typing import List, Tuple
 
 from bs4 import BeautifulSoup
 from requests import Request, Response, Session
@@ -82,6 +82,12 @@ def scrape(statement: str, date_start: datetime, date_end: datetime):
                 param_date_end,
                 statement_value
             )
+            # when there is no data, this html response retuns an 'alert' with an error code.
+            # this is a flag to skip this response.
+            if '(C003-000)' in res_post_statement_params.text:
+                param_date_start, param_date_end = next_period(param_date_start, param_date_end)
+                continue
+
             # it only redirects when there is no cid (first request).
             if res_post_statement_params.history:
                 statement_location = res_post_statement_params.history[0].headers.get('Location')
@@ -91,11 +97,16 @@ def scrape(statement: str, date_start: datetime, date_end: datetime):
             normalized = process_statement(soap_view_statement)
             data.extend(normalized)
 
-            param_date_start = param_date_end + timedelta(days=1)
-            param_date_end = param_date_start + timedelta(days=max_days_request)
+            param_date_start, param_date_end = next_period(param_date_start, param_date_end)
 
     write_csv(statement, data, date_start, date_end)
     logger.info('Pronto.')
+
+
+def next_period(param_date_start: datetime, param_date_end: datetime) -> Tuple[datetime]:
+    param_date_start = param_date_end + timedelta(days=1)
+    param_date_end = param_date_start + timedelta(days=max_days_request)
+    return param_date_start, param_date_end
 
 
 def get_view_benef_search(session: Session) -> Response:
